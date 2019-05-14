@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  gather_facts: True
+  tasks:
+  - name: Write env_infos file in /etc folder
+    copy:
+      content:  |
+         node_role: {{ node_type }}
+         env: {{ env }}
+         my_secret: {{ vault_example_secret }}
+      dest: /etc/env_infos
+
+  - name: Write test-file.txt in /tmp folder
+    copy:
+      content: "file content for instance {{ ansible_hostname }}"
+      dest: /tmp/test-file-{{ ansible_hostname }}.txt
