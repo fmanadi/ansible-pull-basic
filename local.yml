@@ -4,5 +4,5 @@
   tasks:
   - name: Write test-file.txt in /tmp folder
     copy:
-      content: "file content for instance {{ ansible_hostname }}"
+      content: "file content for instance {{ ansible_hostname }} {{ansible_date_time.iso8601_micro}}"
       dest: /tmp/test-file-{{ ansible_hostname }}.txt
