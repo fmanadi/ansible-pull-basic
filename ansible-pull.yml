@@ -9,6 +9,8 @@
     repo_url: git:/github.com/fmanadi/ansible-pull-basic.git
  
   tasks:
+    - name: Install Git
+      yum: pkg=git state=installed
     - name: Install Ansible
       yum: pkg=ansible state=installed
     - name: Create local directory to work from
