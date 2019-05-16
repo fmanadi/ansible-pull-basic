@@ -1,6 +1,11 @@
 ---
-- hosts: localhost
+- name: run the playbook tasks on the localhost
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+
   gather_facts: True
+  
   tasks:
   - name: Write test-file.txt in /tmp folder
     copy:
