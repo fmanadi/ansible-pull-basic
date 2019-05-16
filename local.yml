@@ -6,3 +6,4 @@
     copy:
       content: "file content for instance {{ ansible_hostname }} {{ansible_date_time.iso8601_micro}}"
       dest: /tmp/test-file-{{ ansible_hostname }}.txt
+      mode: 0777
