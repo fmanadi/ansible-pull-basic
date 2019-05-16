@@ -24,15 +24,15 @@
     - name: Install ansible and git
       yum:
         name: ['ansible', 'git']
-        state: latest
+        state: installed
         update_cache: yes
 
-    - name: Add github.com to known hosts
-      shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+    #- name: Add github.com to known hosts
+    #  shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 
     - name: Create local directory to work from
-      copy:
-        path: {{ workdir }}
+      file:
+        path: "{{ workdir }}"
         state: directory
         owner: root
         group: root
