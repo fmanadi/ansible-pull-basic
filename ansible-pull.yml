@@ -1,6 +1,9 @@
 ---
 - hosts: pull_mode_hosts
   remote_user: root
+  become: yes
+  become_user: root
+  become_method: sudo
 
   vars:
 
@@ -24,7 +27,7 @@
     - name: Install ansible and git
       yum:
         name: ['ansible', 'git']
-        state: installed
+        state: present
         update_cache: yes
 
     #- name: Add github.com to known hosts
