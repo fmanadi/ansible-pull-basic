@@ -1,23 +1,63 @@
 ---
-- hosts: no_ssh_VMs ssh_VMs
-  become: true
+- hosts: pull_mode_hosts
+  remote_user: root
+
   vars:
-    schedule: '*/5 * * * *'
+
+    # schedule is fed directly to cron
+    schedule: '*/2 * * * *'
+
+    # User that runs ansible-pull from cron
     cron_user: root
-    logfile: /var/log/ansible-pull.log
+
+    # Directory to where repository will be cloned
     workdir: /var/lib/ansible/local
-    repo_url: https://github.com/fmanadi/ansible-pull-basic
- 
+
+    # File that ansible will use for logs
+    logfile: /var/log/ansible-pull.log
+
+    # Repository to checkout, must contain local.yml file at top level
+    repo_url: git://github.com/fmanadi/ansible-pull-basic
+
   tasks:
-    - name: Install Git
-      yum: pkg=git state=installed
-    - name: Install Ansible
-      yum: pkg=ansible state=installed
+
+    - name: Install ansible and git
+      yum:
+        name: ['ansible', 'git']
+        state: latest
+        update_cache: yes
+
+    - name: Add github.com to known hosts
+      shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
     - name: Create local directory to work from
-      file: path={{workdir}} state=directory owner=root group=root mode=0751
+      copy:
+        path: {{ workdir }}
+        state: directory
+        owner: root
+        group: root
+        mode: 0751
+
     - name: Copy ansible inventory file to client
-      copy: src=/etc/ansible/hosts dest=/etc/ansible/hosts owner=root group=root mode=0644
+      copy:
+        src: /etc/ansible/hosts
+        dest: /etc/ansible/hosts
+        owner: root
+        group: root
+        mode: 0644
+
     - name: Create crontab entry to clone/pull git repository
-      template: src=templates/etc_cron.d_ansible-pull.j2 dest=/etc/cron.d/ansible-pull owner=root group=root mode=0644
+      template:
+        src: templates/etc_cron.d_ansible-pull.j2
+        dest: /etc/cron.d/ansible-pull
+        owner: root
+        group: root
+        mode: 0644
+
     - name: Create logrotate entry for ansible-pull.log
-      template: src=templates/etc_logrotate.d_ansible-pull.j2 dest=/etc/logrotate.d/ansible-pull owner=root group=root mode=0644
+      template:
+        src: templates/etc_logrotate.d_ansible-pull.j2
+        dest: /etc/logrotate.d/ansible-pull
+        owner: root
+        group: root
+        mode: 0644
